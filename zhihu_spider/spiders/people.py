@@ -38,6 +38,8 @@ class PeopleSpider(CrawlSpider):
             'posts': self.extract(response, 'body > div.zg-wrap.zu-main.clearfix > div.zu-main-content > div > div.zm-profile-header.ProfileCard > div.profile-navbar.clearfix > a:nth-child(4) > span::text'),
             'collections': self.extract(response, 'body > div.zg-wrap.zu-main.clearfix > div.zu-main-content > div > div.zm-profile-header.ProfileCard > div.profile-navbar.clearfix > a:nth-child(5) > span::text'),
             'logs': self.extract(response, 'body > div.zg-wrap.zu-main.clearfix > div.zu-main-content > div > div.zm-profile-header.ProfileCard > div.profile-navbar.clearfix > a:nth-child(6) > span::text'),
+            'followers': self.extract(response, 'body > div.zg-wrap.zu-main.clearfix > div.zu-main-sidebar > div.zm-profile-side-following.zg-clear > a:nth-child(2) > strong::text'),
+            'followees': self.extract(response, 'body > div.zg-wrap.zu-main.clearfix > div.zu-main-sidebar > div.zm-profile-side-following.zg-clear > a:nth-child(1) > strong::text'),
         }
         item = self.format(item)
         yield item
@@ -51,6 +53,9 @@ class PeopleSpider(CrawlSpider):
             item['gender'] = ''
 
         item['id'] = item['id'][8:]
+        int_fields=('followees', 'followers', 'posts', 'logs', 'asks', 'answers', 'collections', 'agree', 'thanks')
+        for f in int_fields:
+            item[f] = int(item[f])
         return item
     def extract(self, res, selector):
         return (res.css(selector).extract_first() or u'').encode('utf-8').strip()
