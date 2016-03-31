@@ -14,22 +14,23 @@ BOT_NAME = 'zhihu_spider'
 SPIDER_MODULES = ['zhihu_spider.spiders']
 NEWSPIDER_MODULE = 'zhihu_spider.spiders'
 
-MONGO_URI='mongodb://127.0.0.1:27017'
+# MONGO_URI='mongodb://127.0.0.1:27017'
+MONGO_URI='mongodb://127.0.0.1:8100'
 MONGO_DATABASE='zhihu'
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = 'zhihu_spider (+http://www.yourdomain.com)'
 USER_AGENT = "Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/27.0.1453.93 Safari/537.36"
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
-#CONCURRENT_REQUESTS=32
+CONCURRENT_REQUESTS=32
 
 # Configure a delay for requests for the same website (default: 0)
 # See http://scrapy.readthedocs.org/en/latest/topics/settings.html#download-delay
 # See also autothrottle settings and docs
-DOWNLOAD_DELAY=1
+DOWNLOAD_DELAY=0.1
 # The download delay setting will honor only one of:
 #CONCURRENT_REQUESTS_PER_DOMAIN=16
-#CONCURRENT_REQUESTS_PER_IP=16
+CONCURRENT_REQUESTS_PER_IP=16
 
 # Disable cookies (enabled by default)
 #COOKIES_ENABLED=False
@@ -38,10 +39,16 @@ DOWNLOAD_DELAY=1
 #TELNETCONSOLE_ENABLED=False
 
 # Override the default request headers:
-#DEFAULT_REQUEST_HEADERS = {
+DEFAULT_REQUEST_HEADERS = {
 #   'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
 #   'Accept-Language': 'en',
-#}
+'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.108 Safari/537.36',
+'Accept-Language': 'zh-CN,zh;q=0.8,en-US;q=0.6,en;q=0.4',
+# 'Cookie': '_za=44adbaf5-d84b-4642-9ed7-f9ea277e7d45; cap_id="Zjc4NDdjODA0YTViNGIzZDk3ODNjZTE1MjQyZDgzNDk=|1457412486|b84781fc6ceaec9da3c5167f657e8945e39f2ece"; z_c0="QUFCQUZya1lBQUFYQUFBQVlRSlZUWkRtQlZmQ09WVmJSemtkWU50dlpzTVVDSkRvRWltQjRRPT0=|1457412496|d69dded4732afbda4d7be5045ba9761b21d2f3cb"; udid="AGBAvxk3lQmPTiEWuCKqzZj2d1eGXwVa97A=|1457503823"; d_c0="AJDA4kYkogmPTqjcdrH55c1UiT-ehjAaCj4=|1458279968"; q_c1=9137111e22384722bec3bb1a7fc74b88|1458484741000|1429880911000; _xsrf=1177029a662946153628dd613bbb4a89; _ga=GA1.2.2049539814.1432119670; __utmt=1; __utma=51854390.2049539814.1432119670.1459129189.1459132722.20; __utmb=51854390.4.10.1459132722; __utmc=51854390; __utmz=51854390.1459089109.17.8.utmcsr=zhihu.com|utmccn=(referral)|utmcmd=referral|utmcct=/; __utmv=51854390.100-1|2=registration_date=20111017=1^3=entry_date=20111017=1',
+
+
+}
 
 # Enable or disable spider middlewares
 # See http://scrapy.readthedocs.org/en/latest/topics/spider-middleware.html

@@ -6,10 +6,13 @@ from scrapy.linkextractors import LinkExtractor
 class PeopleSpider(CrawlSpider):
     name = 'people'
     allowed_domains = ['www.zhihu.com']
-    start_urls = ['https://www.zhihu.com/explore']
+    start_urls = [
+    'https://www.zhihu.com/explore',
+    'https://www.zhihu.com/topics',
+    ]
 
     rules = (
-        Rule(LinkExtractor(allow=('zhihu\.com/question'))),
+        Rule(LinkExtractor(allow=('zhihu\.com/question/', 'zhihu\.com/topic/'))),
 
         Rule(LinkExtractor(allow=('zhihu\.com/people/')), callback='parse_item'),
     )
