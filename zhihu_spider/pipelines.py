@@ -6,7 +6,8 @@
 # See: http://doc.scrapy.org/en/latest/topics/item-pipeline.html
 import pymongo
 from scrapy.exceptions import DropItem
-
+from zhihu_spider.spiders.people import People
+from zhihu_spider.spiders.people import Following
 
 
 class ZhihuSpiderPipeline(object):
@@ -20,6 +21,8 @@ class DuplicatesPipeline(object):
         self.ids_seen = set()
 
     def process_item(self, item, spider):
+        if not isinstance(item, People):
+            return item
         if item['id'] in self.ids_seen:
             raise DropItem("Duplicate item found: %s" % item)
         else:
@@ -50,5 +53,14 @@ class MongoPipeline(object):
 
     def process_item(self, item, spider):
         # self.db[self.collection_name].insert(dict(item))
-        self.db[self.collection_name].replace_one({'id':item['id']}, item, True)
+        # print type(item).__name__
+        if isinstance(item, People):
+            name='people'
+            selector={'id':item['id']}
+        elif isinstance(item, Following):
+            name='following'
+            selector=item
+        else:
+            return item
+        self.db[name].replace_one(selector, item, True)
         return item
