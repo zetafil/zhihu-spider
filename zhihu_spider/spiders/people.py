@@ -56,7 +56,7 @@ class PeopleSpider(scrapy.Spider):
         for i in range(following.count()/ps+1):
             res = following.aggregate([{'$skip': i*ps}, {'$limit':ps}, {'$group':{'_id':'$follower'}}])
             for p in res:
-                if people.find_one({'_id':p['_id']}) is not None:
+                if people.find_one({'id':p['_id']}) is not None:
                     # print 'duplicate id',p['id']
                     continue
                 url='https://www.zhihu.com/people/'
