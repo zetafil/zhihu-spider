@@ -8,6 +8,7 @@ from scrapy.linkextractors import LinkExtractor
 from pprint import pprint
 from scrapy.selector import Selector
 import re
+import pymongo
 
 class People(scrapy.Item):
     id = scrapy.Field()
@@ -29,7 +30,8 @@ class Following(scrapy.Item):
     follower = scrapy.Field()
     followee = scrapy.Field()
 
-class PeopleSpider(CrawlSpider):
+# class PeopleSpider(CrawlSpider):
+class PeopleSpider(scrapy.Spider):
     name = 'people'
     allowed_domains = ['www.zhihu.com']
     handle_httpstatus_list = [403]
@@ -46,6 +48,19 @@ class PeopleSpider(CrawlSpider):
         Rule(LinkExtractor(allow=('zhihu\.com/people/')), callback='parse_item'),
     )
 
+    def start_requests(self):
+        client = pymongo.MongoClient('mongodb://localhost:8100')
+        people = client['zhihu']['people']
+        following = client['zhihu']['following']
+        ps=10000
+        for i in range(following.count()/ps+1):
+            res = following.aggregate([{'$skip': i*ps}, {'$limit':ps}, {'$group':{'_id':'$follower'}}])
+            for p in res:
+                if people.find_one({'_id':p['_id']}) is not None:
+                    # print 'duplicate id',p['id']
+                    continue
+                url='https://www.zhihu.com/people/'
+                yield scrapy.Request(url+p['_id'], callback=self.parse_item)
     def parse_item(self, response):
         # self.log('Hi, this is an item page! %s' % response.url)
         # print 'parse_item: '+response.url
