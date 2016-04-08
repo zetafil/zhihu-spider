@@ -22,19 +22,22 @@ rank = nx.pagerank(G)
 
 ranking = sorted(rank.items(), key=operator.itemgetter(1), reverse=True)
 
-for id,wight in ranking:
-    for follower, _ in G.in_edges(id):
-        if 'followers' not in G[follower]:
-            G[follower]['followers'] = []
-        elif len(G[follower]['followers']) < 100:
-            G[follower]['followers'].append(id)
+# print G.out_edges('mymiss')
+
+for i,(id,wight) in enumerate(ranking, start=1):
+    for follower,followee in G.out_edges(id):
+        # print follower, followee
+        if 'followers' not in G.node[followee]:
+            G.node[followee]['followers'] = []
+        if len(G.node[followee]['followers']) < 100:
+            G.node[followee]['followers'].append({'id':id, 'rank':i, 'pagerank':wight})
 
 # for x in G.nodes():
     # print G[x].get('followers', None)
 res=[]
-for id, _ in ranking[:100]:
+for i, (id, wight) in enumerate(ranking[:100], start=1):
     # print id
-    res.append({'id':id, 'followers': G[id]['followers'] if 'followers' in G[id] else []})
+    res.append({'id':id, 'rank':i, 'pagerank':wight, 'followers': G.node[id]['followers'] if 'followers' in G.node[id] else []})
 
 db['ranking'].insert_one({'type':'user', 'list':res}    )
 # print res

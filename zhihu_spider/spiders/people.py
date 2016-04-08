@@ -52,15 +52,22 @@ class PeopleSpider(scrapy.Spider):
         client = pymongo.MongoClient('mongodb://localhost:8100')
         people = client['zhihu']['people']
         following = client['zhihu']['following']
-        ps=10000
+        ps=100000
+        print following.count()
+        # return 
         for i in range(following.count()/ps+1):
+            count = 0
             res = following.aggregate([{'$skip': i*ps}, {'$limit':ps}, {'$group':{'_id':'$follower'}}])
             for p in res:
                 if people.find_one({'id':p['_id']}) is not None:
-                    # print 'duplicate id',p['id']
+                    # print 'duplicate id',p['_id']
+                    count +=1
                     continue
+                # yield []
                 url='https://www.zhihu.com/people/'
                 yield scrapy.Request(url+p['_id'], callback=self.parse_item)
+            print 'duplicate count:',count
+        # yield {}
     def parse_item(self, response):
         # self.log('Hi, this is an item page! %s' % response.url)
         # print 'parse_item: '+response.url
